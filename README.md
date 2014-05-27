@@ -55,6 +55,12 @@ the first place.
 [aminbandali]: http://aminbandali.com/misc/clean-urls/
 
 
+To Do
+-----
+
+ - allow for pagination links of the form `/page/2` without a trailing slash
+
+
 License
 -------
 

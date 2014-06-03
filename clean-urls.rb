@@ -1,3 +1,8 @@
+# Copyright 2014 Google Inc. All rights reserved.
+#
+# Use of this source code is governed by the MIT
+# license that can be found in the LICENSE file.
+
 # This plugin allows for clean URLs of the form /:title (with no trailing slash
 # or ".html" extension).  This is done by creating destination files of the
 # form '/:title.html', but URLs of the form '/:title'.  Your webserver must be

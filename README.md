@@ -40,7 +40,7 @@ paginate_path: /page/:num
 ```
 
 This will generate pagination destination files of the form `/page/:num.html`,
-and will create links with the file extension.
+and will create links without the file extension.
 
 Just make sure you configure your webserver to serve these files appropriately,
 as noted above.

@@ -30,7 +30,17 @@ permalink: /:year/:month/:title
 From there, jekyll will create destination files of the form
 `/:year/:month/:title.html`, but will create links without the file extension.
 Similarly, you can specify a permalink in the front matter of an individual
-post or page and the same logic will be applied.
+post or page and the same logic will be applied.  
+
+For pagination links, you can also specify a paginate\_page setting without a
+trailing slash:
+
+``` yaml
+paginate_path: /page/:num
+```
+
+This will generate pagination destination files of the form `/page/:num.html`,
+and will create links with the file extension.
 
 Just make sure you configure your webserver to serve these files appropriately,
 as noted above.
@@ -53,12 +63,6 @@ the first place.
 [jekyll#219]: https://github.com/jekyll/jekyll/issues/219
 [gist:10739376]: https://gist.github.com/andrewlkho/10739376
 [aminbandali]: http://aminbandali.com/misc/clean-urls/
-
-
-To Do
------
-
- - allow for pagination links of the form `/page/2` without a trailing slash
 
 
 License

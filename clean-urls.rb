@@ -17,7 +17,7 @@
 # Returns the Boolean of whether clean URLs are requested.
 def clean_urls?(permalink)
   permalink = site.permalink_style.to_s if permalink.nil?
-  return permalink !~ /\.html$/ && permalink !~ /\/$/
+  permalink !~ /\.html$/ && permalink !~ /\/$/
 end
 
 module Jekyll

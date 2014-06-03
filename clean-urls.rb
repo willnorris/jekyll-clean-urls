@@ -72,5 +72,54 @@ module Jekyll
     alias_method :destination_without_clean_urls, :destination
     alias_method :destination, :destination_with_clean_urls
 
+    # The generated relative url of this page. e.g. /about.html.  If clean URLs
+    # are requested, "index.html" is removed from the end of URLs for HTML
+    # pages.
+    #
+    # Returns the String url.
+    def url_with_clean_urls
+      if clean_urls?(permalink)
+        url_without_clean_urls.sub(/\/index\.html$/, '/')
+      else
+        url_without_clean_urls
+      end
+    end
+
+    alias_method :url_without_clean_urls, :url
+    alias_method :url, :url_with_clean_urls
+
+  end
+
+  module Generators
+    class Pagination < Generator
+      # Paginates the blog's posts.
+      #
+      # By default, Jekyll always renders index.html files into paginated
+      # directories based on the 'paginate_path' config option.  Instead,
+      # the 'paginate_path' config variable is treated as a permalink template,
+      # meaning that paginated pages need not be directories.  For example, a
+      # config of '/pages/:num.html' will generate page/2.html, page/3.html,
+      # etc.
+      def paginate_with_clean_urls(site, page)
+        all_posts = site.site_payload['site']['posts']
+        pages = Pager.calculate_pages(all_posts, site.config['paginate'].to_i)
+        (1..pages).each do |num_page|
+          pager = Pager.new(site, num_page, all_posts, pages)
+          if num_page > 1
+            newpage = Page.new(site, site.source, page.dir, page.name)
+            newpage.pager = pager
+            paginate_path = Pager.paginate_path(site, num_page)
+            newpage.dir = paginate_path
+            newpage.data["permalink"] = File.join(page.dir, paginate_path)
+            site.pages << newpage
+          else
+            page.pager = pager
+          end
+        end
+      end
+
+      alias_method :paginate_without_clean_urls, :paginate
+      alias_method :paginate, :paginate_with_clean_urls
+    end
   end
 end

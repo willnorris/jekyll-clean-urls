@@ -78,11 +78,9 @@ module Jekyll
     #
     # Returns the String url.
     def url_with_clean_urls
-      if clean_urls?(permalink)
-        url_without_clean_urls.sub(/\/index\.html$/, '/')
-      else
-        url_without_clean_urls
-      end
+      url = url_without_clean_urls
+      url.sub!(/\/index\.html$/, '/') if clean_urls?(permalink)
+      url
     end
 
     alias_method :url_without_clean_urls, :url

@@ -93,7 +93,7 @@ module Jekyll
 
   end
 
-  module Generators
+  module Paginate
     class Pagination < Generator
       # Paginates the blog's posts.
       #

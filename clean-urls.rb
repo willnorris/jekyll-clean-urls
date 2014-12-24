@@ -25,6 +25,14 @@ def clean_urls?(permalink)
   permalink !~ /\.html$/ && permalink !~ /\/$/
 end
 
+# Extensionless HTML files are specified by an optional trim_file_extensions
+# setting in _config.yaml.
+#
+# Returns the Boolean of whether extensionless files are requested
+def trim_file_extensions?
+   site.config['trim_file_extensions']
+end
+
 module Jekyll
   class Post
     # Obtain destination path, using clean URLs if requested.
@@ -34,7 +42,7 @@ module Jekyll
     # destination file to /:title.html if clean URLs are requested.
     def destination_with_clean_urls(dest)
       path = destination_without_clean_urls(dest)
-      path.sub!(/\/index.html$/, '.html') if clean_urls?(permalink)
+      path.sub!(/\/index.html$/, trim_file_extensions? ? '' : '.html') if clean_urls?(permalink)
       path
     end
 
@@ -70,7 +78,7 @@ module Jekyll
     # manually add the ".html" extension.
     def destination_with_clean_urls(dest)
       path = destination_without_clean_urls(dest)
-      path += ".html" if html? && path !~ /\.html$/
+      path += ".html" if html? && path !~ /\.html$/ && !trim_file_extensions?
       path
     end
 
@@ -139,4 +147,35 @@ module Jekyll
       alias_method :paginate, :paginate_with_clean_urls
     end
   end
+  
+  module Commands
+    class Serve
+      class << self
+        alias :default_webrick_options :webrick_options
+      end
+      # Convenient place to grab our trim_file_extensions setting
+      # (We could use self.process but it does a join() and so doesn't
+      # return until the server exits.)
+      def self.webrick_options(config)
+        $trim_file_exts = config['trim_file_extensions']
+        default_webrick_options(config)
+      end
+    end
+  end
+end
+
+require "webrick"
+module WEBrick
+  module HTTPUtils
+    class << self
+      alias_method :default_mime_type, :mime_type
+      # Tweak webrick to return a "text/html" content type (instead of the default 
+      # application/octet-stream) for extensionless files.
+      def mime_type(filename, mime_tab)
+        filename = ((/\.(\w+)$/ =~ filename) ? filename : filename + '.html') if $trim_file_exts
+        # return 'text/html' if !file_ext
+        default_mime_type(filename, mime_tab)
+      end
+    end
+  end  
 end

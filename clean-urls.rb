@@ -25,6 +25,10 @@ def clean_urls?(permalink)
   permalink !~ /\.html$/ && permalink !~ /\/$/
 end
 
+def trim_file_extensions?
+   site.config['trim_file_extensions']
+end
+
 module Jekyll
   class Post
     # Obtain destination path, using clean URLs if requested.
@@ -34,7 +38,7 @@ module Jekyll
     # destination file to /:title.html if clean URLs are requested.
     def destination_with_clean_urls(dest)
       path = destination_without_clean_urls(dest)
-      path.sub!(/\/index.html$/, '.html') if clean_urls?(permalink)
+	  path.sub!(/\/index.html$/, trim_file_extensions? ? '' : '.html') if clean_urls?(permalink)
       path
     end
 
@@ -70,7 +74,7 @@ module Jekyll
     # manually add the ".html" extension.
     def destination_with_clean_urls(dest)
       path = destination_without_clean_urls(dest)
-      path += ".html" if html? && path !~ /\.html$/
+      path += ".html" if html? && path !~ /\.html$/ && !trim_file_extensions?
       path
     end
 

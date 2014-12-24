@@ -25,6 +25,10 @@ def clean_urls?(permalink)
   permalink !~ /\.html$/ && permalink !~ /\/$/
 end
 
+# Extensionless HTML files are specified by an optional trim_file_extensions
+# setting in _config.yaml.
+#
+# Returns the Boolean of whether extensionless files are requested
 def trim_file_extensions?
    site.config['trim_file_extensions']
 end
@@ -38,7 +42,7 @@ module Jekyll
     # destination file to /:title.html if clean URLs are requested.
     def destination_with_clean_urls(dest)
       path = destination_without_clean_urls(dest)
-	  path.sub!(/\/index.html$/, trim_file_extensions? ? '' : '.html') if clean_urls?(permalink)
+      path.sub!(/\/index.html$/, trim_file_extensions? ? '' : '.html') if clean_urls?(permalink)
       path
     end
 
